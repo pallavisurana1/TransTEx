@@ -1,0 +1,153 @@
+---
+title: "example.Rmd"
+author: "Pallavi Surana"
+date: "2024-03-01"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{pkg_vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## TransTEx pipeline functions use:
+
+|          |                                                                                                                                                                          |
+|-------------------|-----------------------------------------------------|
+| Step 1:  | Calculate the Proportion Index matrix.                                                                                                                                   |
+| Step 1a: | Apply the IPi or inflection point cutoff to then separate the genes/transcripts into expression classes based on TransTEx into Tissue-specific, enhanced and widespread. |
+| Note:    | All the rest of the transcripts are Lowly-expressed and not included in the analysis.                                                                                    |
+| Step 2:  | Fold change and fold change max calculation for tissue specific and enhanced groups.                                                                                     |
+| Step 3:  | Stratified sub-sampling applied to tissue groups with sample size \>=50 (recommended) and empirical p value calculated.                                                  |
+
+```{r}
+library(TransTEx)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r expr}
+set.seed(123) # For reproducibility
+
+# Parameters for the log-normal distribution
+num_transcripts <- 3000
+num_samples <- 510
+transcript_ids <- paste0("ENST", sprintf("%09d", 1:num_transcripts))
+sample_ids <- paste0("Sample", sprintf("%03d", 1:num_samples))
+meanlog <- 1.5
+sdlog <- 1.2
+
+# Adjusted sparsity factor for bulk RNA-seq data (e.g., 5% of values set to zero)
+sparsity_factor <- 0.05
+
+# Create a matrix with random expression values from a log-normal distribution
+gene_expression_matrix <- matrix(rlnorm(num_transcripts * num_samples, meanlog = meanlog, sdlog = sdlog), 
+                                 nrow = num_transcripts, ncol = num_samples, 
+                                 dimnames = list(transcript_ids, sample_ids))
+
+# Introduce zeros based on the adjusted sparsity factor
+zero_indices <- sample(length(gene_expression_matrix), size = floor(sparsity_factor * length(gene_expression_matrix)))
+gene_expression_matrix[zero_indices] <- 0
+
+# Convert matrix to a data frame for convenience, with samples as rows
+gene_expression_df <- as.data.frame(t(gene_expression_matrix))
+gene_expression_df <- gene_expression_df %>% rownames_to_column("sample")
+
+# View the first few rows of the gene expression data frame
+head(gene_expression_df)
+
+```
+
+```{r pheno}
+# Define tissue names
+tissues <- c("Tissue1", "Tissue2", "Tissue3", "Tissue4", "Tissue5", "Tissue6")
+
+# Assign each sample ID to one of the six tissues
+set.seed(123) # For reproducibility
+sample_tissues <- sample(tissues, 510, replace = TRUE)
+
+# Create a phenotype data frame
+pheno_df <- data.frame(sample = sample_ids, tissue = sample_tissues)
+
+# View the first few rows of the phenotype data frame
+head(pheno_df)
+
+```
+
+```{r step1}
+# functions used PI_matrix(), calculate_inflection_points(), divide_transtex_classes()
+data <- merge(gene_expression_df, pheno_df, by = "sample", all = TRUE) 
+
+# Step 1: Calculate the Proportion Index (PI) Matrix
+pi_matrix <- PI_matrix(data, iter = 0.5)
+dim(pi_matrix)
+```
+
+```{r step1a}
+# Calculate Inflection Points for the PI Matrix
+inflection_points_df <- calculate_inflection_points(pi_matrix, threshold = 0.5)
+
+# Determine Transcripts above the Inflection Point
+pi_matrix1 = pi_matrix %>% as.data.frame %>% column_to_rownames("tissue")
+pi_matrix1$num = NULL
+
+pi_matrix2 = list()
+for(i in 1:nrow(inflection_points_df)){
+  up_lim = inflection_points_df$value[i]
+  x = prop_greater(data_prop = pi_matrix1, up_lim = as.numeric(up_lim))
+  y = x[[i]]
+  pi_matrix2[[i]] = y
+}
+names(pi_matrix2) = rownames(pi_matrix1)
+```
+
+```{r step1b}
+# Divide Transcripts into Expression Classes - returns a list where the data is contained in expression_classes$transtex
+pi_matrix3 = plyr::ldply(pi_matrix2)
+colnames(pi_matrix3) = c("tissue", "transcript", "prop")
+
+expression_classes <- divide_transtex_classes(pi_matrix3)
+
+```
+
+```{r step2}
+# This chunk is for TSp calculations (there are functions in the package for TEn calculations)
+# data matrix to be used
+matrix_fold_change <- data %>% relocate(tissue)
+
+# calculate fold change (optional) 
+fold_change_df = fold_change_TSp(matrix_fold_change, category = "tissue-specific", tissue_interest = matrix_fold_change$tissue)
+
+# calculate fold change max (required)
+fold_change_max_df = fold_change_max_TSp(matrix_fold_change)
+```
+
+
+```{r step3}
+matrix_subsample <- data %>% relocate(tissue)
+matrix_subsample = matrix_subsample #showing a subset for faster run
+
+# Specify parameters
+tissue_of_interest <- "Tissue2"
+size <- 0.7  # Or any other size you prefer
+iterations <- 10 # takes long so instead of 100 (recommended iters), we show with 10
+threshold <- 0.05
+
+# Perform the analysis
+subsample_mat <- subsampling_empiricalP(matrix_subsample, tissue_of_interest, size, iterations, threshold)
+
+# uncomment below to save empirical p values
+# emp_p_values = calculate_empirical_p(subsample_mat, 0.05)
+
+```
+
+#### To get final TransTEx-based expression groups combine the following (recommended):
+
+-   PI\>IPi cutoff
+
+-   log2(FC-MAX) \>=2
+
+-   empirical p \< 0.01
