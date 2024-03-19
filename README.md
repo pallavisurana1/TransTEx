@@ -41,12 +41,11 @@ browseVignettes("TransTEx")
 
 ### Reporting Issues
 
-If you encounter any bugs or issues while using `TransTEx`, please report them on the [Issues](https://github.com/DavuluriLab/TransTEx/issues) page of the GitHub repository. We appreciate your contributions to improving `TransTEx`.
+If you encounter any bugs or issues while using `TransTEx`, please report them on the [Issues](https://github.com/pallavisurana1/TransTEx/issues) page of the GitHub repository. We appreciate your contributions to improving `TransTEx`.
 
 ### Citation
 
-If you use `TransTEx` in your research, please cite our work: (Coming soon)
-If you are interested in all the results from this study - please visit our database website - https://bmi.cewit.stonybrook.edu/transtexdb/
+If you use `TransTEx` in your research, please cite our work: (Coming soon). 
 
 ### Contact
 
