@@ -46,6 +46,7 @@ If you encounter any bugs or issues while using `TransTEx`, please report them o
 ### Citation
 
 If you use `TransTEx` in your research, please cite our work: (Coming soon)
+If you are interested in all the results from this study - please visit our database website - https://bmi.cewit.stonybrook.edu/transtexdb/
 
 ### Contact
 
