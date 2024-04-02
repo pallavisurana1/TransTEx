@@ -96,7 +96,7 @@ prop_greater = function(data_prop, up_lim){
   df = data_prop
   df = df %>% t() %>% as.data.frame
 
-  df_filtered <- df[apply(df, 1, function(x) all(x >= up_lim)), ]
+  df_filtered <- df[apply(df, 1, function(x) any(x >= up_lim)), ]
 
   ##-----
 
