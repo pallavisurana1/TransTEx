@@ -22,6 +22,7 @@ install.packages("remotes")
 With `remotes` installed, proceed to install `TransTEx`:
 
 ``` r
+BiocManager::install("edgeR")
 remotes::install_github("pallavisurana1/TransTEx")
 ```
 
