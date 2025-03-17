@@ -6,6 +6,7 @@
 ### Important links:
 * [Paper](https://doi.org/10.1093/bioinformatics/btae475)
 * [Database](https://bmi.cewit.stonybrook.edu/transtexdb/)
+  ##### Note: The database works on LTE or Wi-Fi (not both sometimes). Please try other networks in case one does not work.
 * [Talk](https://youtu.be/p4S01JPJHsU?si=P8Jq7A6VVY1on-sQ)
 
 ### Installation
@@ -45,6 +46,22 @@ browseVignettes("TransTEx")
 ### Reporting Issues
 If you encounter any bugs or issues while using `TransTEx`, please report them on the [Issues](https://github.com/pallavisurana1/TransTEx/issues) page of the GitHub repository. We appreciate your contributions to improving `TransTEx`.
 
+### Citation
+
+If you use TransTEx in your research, please cite:
+```bibtex
+@article{Surana2024,
+  author    = {Pallavi Surana and Pratik Dutta and Ramana V Davuluri},
+  title     = {TransTEx: novel tissue-specificity scoring method for grouping human transcriptome into different expression groups},
+  journal   = {Bioinformatics},
+  volume    = {40},
+  number    = {8},
+  year      = {2024},
+  article   = {btae475},
+  doi       = {10.1093/bioinformatics/btae475},
+  url       = {https://doi.org/10.1093/bioinformatics/btae475}
+}
+```
 
 ### Contact
 For additional information or inquiries about `TransTEx`, please contact Pallavi Surana (pallavi.surana\@stonybrook.edu)
