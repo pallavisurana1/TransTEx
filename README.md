@@ -10,6 +10,8 @@
 
 * 📄 [Published Paper](https://doi.org/10.1093/bioinformatics/btae475)
 * 🌐 [Online Database](https://bmi.cewit.stonybrook.edu/transtexdb/)
+* 🌐 [Online Data Download Resource](https://pallavisurana1.github.io/TransTEx_related_datasets/)
+  
   *Note: The database may work best on either LTE or Wi-Fi — try switching networks if it doesn’t load.*
 * 🎥 [Introductory Talk](https://youtu.be/p4S01JPJHsU?si=P8Jq7A6VVY1on-sQ)
 
