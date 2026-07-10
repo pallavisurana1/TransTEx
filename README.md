@@ -2,7 +2,7 @@
 
 **TransTEx** is a comprehensive R package developed by the Davuluri Lab for analyzing and exploring tissue-specific transcript/gene expression patterns. This tool introduces a novel tissue-specificity scoring method to group the human transcriptome into distinct expression categories. TransTEx enables the discovery of tissue-specific and tissue-enhanced transcripts across conditions using bulk-transcriptomic data.
 
-<img width="903" height="509" alt="image" src="https://github.com/user-attachments/assets/f80a3461-ec3b-42d2-a712-8281b9f67ec9" />
+<img width="4221" height="2378" alt="Picture1" src="https://github.com/user-attachments/assets/cd8a9e74-b996-4407-a642-62aa61934a96" />
 
 ---
 
